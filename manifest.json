@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Auto Click – Gemini",
+  "version": "1.3.8",
+  "description": "Extension Auto Click compatible Chrome PC et Kiwi Browser Android avec Render WebSocket.",
+  "permissions": [
+    "storage",
+    "downloads",
+    "activeTab",
+    "tabs",
+    "windows",
+    "notifications",
+    "debugger"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.deepseek.com/*",
+    "https://only-faucet.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Configuration Gemini",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://onlyfaucet.com/faucet/currency/usdt"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

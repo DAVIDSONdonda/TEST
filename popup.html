@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Auto Click – Gemini</title>
+  <style>
+    body { width: 330px; margin: 0; padding: 16px; font: 14px system-ui, sans-serif; color: #222; }
+    h1 { margin: 0 0 12px; font-size: 18px; }
+    label { display: block; margin: 12px 0 6px; font-weight: 600; }
+    input[type="password"], input[type="text"], select { width: 100%; box-sizing: border-box; padding: 9px; border: 1px solid #bbb; border-radius: 4px; }
+    .row { margin: 10px 0; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    
+    /* Style du switch */
+    .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 22px; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: #10b981; }
+    input:checked + .slider:before { transform: translateX(22px); }
+
+    button#save { width: 100%; margin-top: 14px; padding: 9px 12px; border: 0; border-radius: 4px; background: #2563eb; color: white; cursor: pointer; }
+    button#save:hover { background: #1d4ed8; }
+    #status { min-height: 20px; margin-top: 10px; font-weight: 500; text-align: center; }
+    .hint { color: #555; font-size: 12px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <h1>Configuration IA</h1>
+  <p class="hint">La clé est conservée localement dans Chrome.</p>
+  
+  <div class="row">
+    <span style="font-weight:600;">Extension active</span>
+    <label class="switch">
+      <input type="checkbox" id="extensionActive">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="row">
+    <span style="font-weight:600;">Télécharger les images</span>
+    <label class="switch">
+      <input type="checkbox" id="downloadImages">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <label for="apiKey">Clé API Gemini</label>
+  <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="Collez votre clé API ici">
+
+  <label for="modelSelect">Modèle Gemini (Recommandé)</label>
+  <select id="modelSelect">
+    <option value="gemini-4-hydrogen">Gemini 4 Hydrogen</option>
+    <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+    <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+    <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite (Recommandé)</option>
+    <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+    <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+  </select>
+
+  <label for="providerSelect">Service d’analyse</label>
+  <select id="providerSelect">
+    <option value="gemini">Gemini</option>
+    <option value="deepseek">DeepSeek Vision</option>
+  </select>
+
+  <label for="deepseekApiKey">Clé API DeepSeek</label>
+  <input id="deepseekApiKey" type="password" autocomplete="off" spellcheck="false" placeholder="Collez votre clé API DeepSeek ici">
+
+  <label for="deepseekModelSelect">Modèle DeepSeek</label>
+  <select id="deepseekModelSelect">
+    <option value="deepseek-flash">DeepSeek Flash (recommandé, vision)</option>
+    <option value="deepseek-v4-pro">DeepSeek V4 Pro (texte uniquement)</option>
+    <option value="deepseek-chat">DeepSeek Chat (ancien identifiant)</option>
+    <option value="deepseek-reasoner">DeepSeek Reasoner (ancien identifiant)</option>
+    <option value="deepseek-v4-flash">DeepSeek V4 Flash (ancien identifiant)</option>
+    <option value="deepseek-v4-flash-vision-exp">DeepSeek V4 Flash Vision Exp. (ancien identifiant)</option>
+  </select>
+
+  <p class="hint">Pour l’analyse d’images, utilisez <code>deepseek-flash</code>. Les autres noms peuvent être anciens, redirigés ou incompatibles avec la vision.</p>
+
+  <!-- Option pour le serveur Render -->
+  <div class="row" style="margin-top: 14px;">
+    <span style="font-weight:600;">Utiliser le serveur Render</span>
+    <label class="switch">
+      <input type="checkbox" id="useRenderServer">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <label for="renderApiUrl">URL de l'API Render</label>
+  <input id="renderApiUrl" type="text" autocomplete="off" spellcheck="false" placeholder="https://only-faucet.onrender.com">
+
+  <!-- Option pour le serveur Local -->
+  <div class="row" style="margin-top: 14px;">
+    <span style="font-weight:600;">Utiliser le serveur local</span>
+    <label class="switch">
+      <input type="checkbox" id="useLocalServer">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <label for="localApiUrl">URL du serveur local</label>
+  <input id="localApiUrl" type="text" autocomplete="off" spellcheck="false" placeholder="http://127.0.0.1:3000">
+
+  <button id="save">Enregistrer</button>
+  <div id="status" role="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

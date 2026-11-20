@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Auto Click – Options</title>
+  <style>
+    body { font: 15px system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 20px; }
+    label { display: block; margin: 18px 0 6px; font-weight: 600; }
+    input[type="text"], input[type="number"], input[type="password"] { width: 100%; box-sizing: border-box; padding: 9px; }
+    button { margin-top: 20px; padding: 9px 16px; cursor: pointer; }
+    #status { margin-left: 10px; color: #176b35; }
+    .warning { background: #fff4ce; padding: 12px; border-left: 4px solid #d99b00; }
+  </style>
+</head>
+<body>
+  <h1>Auto Click</h1>
+  <p class="warning">Utilisez cette extension uniquement sur votre propre site et pour un composant d’interface qui n’est pas une vérification anti-bot ou un CAPTCHA.</p>
+
+  <label for="selector">Sélecteur CSS</label>
+  <input id="selector" type="text" value="span.mc-box" spellcheck="false">
+
+  <label for="delayMs">Délai avant le clic (ms)</label>
+  <input id="delayMs" type="number" min="0" step="50" value="50">
+
+  <label><input id="enabled" type="checkbox" checked> Activer le clic automatique</label>
+  <label><input id="oncePerElement" type="checkbox" checked> Ne cliquer qu’une fois par élément</label>
+
+  <h2>Analyse de l’image composite</h2>
+  <p class="warning">L’image PNG complète est envoyée à Gemini après chaque capture. La clé est conservée dans le stockage local de Chrome et n’est pas intégrée au code.</p>
+  <label><input id="geminiEnabled" type="checkbox" checked> Envoyer l’image composite à Gemini</label>
+  <label for="geminiApiKey">Clé API Gemini (Google AI Studio)</label>
+  <input id="geminiApiKey" type="password" autocomplete="off" spellcheck="false">
+
+  <button id="save">Enregistrer</button><span id="status"></span>
+  <script src="options.js"></script>
+</body>
+</html>
