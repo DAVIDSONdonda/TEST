@@ -709,21 +709,19 @@ function formatTime(seconds) {
 }
 
 // ------------------------------------------------------------------
-// MISE À L'ÉCHELLE AUTOMATIQUE DU CONTENU YOUTUBE
+// MISE À L'ÉCHELLE AUTOMATIQUE DU CONTENU DES FENÊTRES
 // ------------------------------------------------------------------
-// La fenêtre de référence YouTube est 1280x720 à 100 %.
-// Quand la fenêtre est réduite, le contenu est zoomé proportionnellement.
+// Quand une fenêtre est réduite, son contenu est zoomé proportionnellement.
 let youtubeZoomUpdateTimeout = null;
+let mainZoomUpdateTimeout = null;
 
-function updateYoutubeZoom(window) {
+function updateWindowZoom(window, referenceWidth, referenceHeight, label) {
     if (!window || window.isDestroyed() || !window.webContents) return;
 
     try {
         const [contentWidth, contentHeight] = window.getContentSize();
         if (!contentWidth || !contentHeight) return;
 
-        const referenceWidth = 1280;
-        const referenceHeight = 720;
         const widthScale = contentWidth / referenceWidth;
         const heightScale = contentHeight / referenceHeight;
 
@@ -734,10 +732,18 @@ function updateYoutubeZoom(window) {
         );
 
         window.webContents.setZoomFactor(zoomFactor);
-        log("debug", `Zoom YouTube automatique : ${Math.round(zoomFactor * 100)} % (${contentWidth}x${contentHeight})`);
+        log("debug", `Zoom ${label} automatique : ${Math.round(zoomFactor * 100)} % (${contentWidth}x${contentHeight})`);
     } catch (err) {
-        log("warning", `Impossible d'appliquer le zoom YouTube : ${err.message}`);
+        log("warning", `Impossible d'appliquer le zoom ${label} : ${err.message}`);
     }
+}
+
+function updateYoutubeZoom(window) {
+    updateWindowZoom(window, 1280, 720, "YouTube");
+}
+
+function updateMainWindowZoom(window) {
+    updateWindowZoom(window, 1200, 800, "principal");
 }
 
 function scheduleYoutubeZoomUpdate(window) {
@@ -746,6 +752,15 @@ function scheduleYoutubeZoomUpdate(window) {
     youtubeZoomUpdateTimeout = setTimeout(() => {
         youtubeZoomUpdateTimeout = null;
         updateYoutubeZoom(window);
+    }, 100);
+}
+
+function scheduleMainWindowZoomUpdate(window) {
+    if (mainZoomUpdateTimeout) clearTimeout(mainZoomUpdateTimeout);
+
+    mainZoomUpdateTimeout = setTimeout(() => {
+        mainZoomUpdateTimeout = null;
+        updateMainWindowZoom(window);
     }, 100);
 }
 
@@ -1679,6 +1694,13 @@ async function createWindow() {
             preload: path.join(__dirname, 'preload_new.js')
         }
     });
+
+    // Réduire ou agrandir la fenêtre principale réduit/agrandit aussi son contenu
+    // de manière uniforme, comme pour la fenêtre YouTube du mode 5.
+    mainWindow.on('resize', () => {
+        scheduleMainWindowZoomUpdate(mainWindow);
+    });
+
     if (savedMainConfig) {
         setTimeout(() => {
             if (mainWindow.isDestroyed()) return;
@@ -1697,6 +1719,7 @@ async function createWindow() {
     mainWindow.loadURL(TARGET_URL);
     attachContextMenu(mainWindow);
     mainWindow.webContents.on('did-finish-load', async () => {
+        updateMainWindowZoom(mainWindow);
         attachContextMenu(mainWindow);
         if (freezeReloadTimeout) {
             clearTimeout(freezeReloadTimeout);
